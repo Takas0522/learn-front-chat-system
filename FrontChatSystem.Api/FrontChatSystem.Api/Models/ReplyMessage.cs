@@ -6,14 +6,23 @@ using System.Threading.Tasks;
 
 namespace FrontChatSystem.Api.Models
 {
-    public class PostMessageReturn
+
+    public class ReplyMessage
     {
         [DataMember(Name = "@odata.context")]
         public string Odatacontext { get; set; }
+        [DataMember(Name = "@odata.count")]
+        public int Odatacount { get; set; }
+        [DataMember(Name = "value")]
+        public IEnumerable<Value> Value { get; set; }
+    }
+
+    public class Value
+    {
         [DataMember(Name = "id")]
         public string Id { get; set; }
         [DataMember(Name = "replyToId")]
-        public object ReplyToId { get; set; }
+        public string ReplyToId { get; set; }
         [DataMember(Name = "etag")]
         public string Etag { get; set; }
         [DataMember(Name = "messageType")]
@@ -22,8 +31,8 @@ namespace FrontChatSystem.Api.Models
         public DateTime CreatedDateTime { get; set; }
         [DataMember(Name = "lastModifiedDateTime")]
         public object LastModifiedDateTime { get; set; }
-        [DataMember(Name = "deleted")]
-        public bool Deleted { get; set; }
+        [DataMember(Name = "deletedDateTime")]
+        public object DeletedDateTime { get; set; }
         [DataMember(Name = "subject")]
         public object Subject { get; set; }
         [DataMember(Name = "summary")]
@@ -32,6 +41,8 @@ namespace FrontChatSystem.Api.Models
         public string Importance { get; set; }
         [DataMember(Name = "locale")]
         public string Locale { get; set; }
+        [DataMember(Name = "webUrl")]
+        public string WebUrl { get; set; }
         [DataMember(Name = "policyViolation")]
         public object PolicyViolation { get; set; }
         [DataMember(Name = "from")]

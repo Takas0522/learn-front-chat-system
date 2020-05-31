@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FrontChatSystem.Api.Domains;
+using FrontChatSystem.Api.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,9 +23,9 @@ namespace FrontChatSystem.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<string> GetMessages(string channelId)
+        public async Task<MessageWithReply> GetMessages(string channelId, string messageId)
         {
-            string messageIId = await _service.GetChanelMessages(channelId);
+            MessageWithReply messageIId = await _service.GetChanelMessages(channelId, messageId);
             return messageIId;
         }
 
@@ -35,5 +36,11 @@ namespace FrontChatSystem.Api.Controllers
             return messageIId;
         }
 
+        [HttpPut]
+        public async Task<ActionResult<string>> ReplyMessage([FromForm]string channelId, [FromForm]string messageId, [FromForm]string message)
+        {
+            await _service.ReplyMessages(channelId, messageId, message);
+            return null;
+        }
     }
 }

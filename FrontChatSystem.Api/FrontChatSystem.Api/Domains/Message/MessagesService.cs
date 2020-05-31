@@ -17,9 +17,21 @@ namespace FrontChatSystem.Api.Domains
             _data = data;
         }
 
-        public async Task<string> GetChanelMessages(string chanelId)
+        public async Task<MessageWithReply> GetChanelMessages(string chanelId, string messageId)
         {
-            return await _data.GetChannelMessages(chanelId);
+             Models.Message data = await _data.GetChannelMessages(chanelId, messageId);
+            ReplyMessage replyData = await _data.GetReplyMessages(chanelId, messageId);
+            
+            var hostData = new HostMessage { CreatedDateTime = data.CreatedDateTime, HostUserId = data.From.User.Id };
+            IEnumerable<ReplyMessageData> reply = replyData.Value.Select(s => {
+                return new ReplyMessageData {
+                    CreatedDateTime = s.CreatedDateTime,
+                    Content = s.Body.Content,
+                    UserId = s.From.User.Id
+                };
+            });
+
+            return new MessageWithReply { Message = hostData, ReplyMessage = reply };
         }
 
         public async Task<string> PostMessages(string chanelId, string message)
@@ -48,7 +60,7 @@ namespace FrontChatSystem.Api.Domains
                 Body = messagebody
             };
             postmessage.EncodeContentString();
-            await _data.PostChannelMessages(chanelId, postmessage);
+            await _data.ReplyChannelMessages(chanelId, messageId, postmessage);
         }
     }
 }

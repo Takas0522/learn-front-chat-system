@@ -91,18 +91,36 @@ namespace FrontChatSystem.Api.Data
             }
         }
 
-        public async Task<string> GetChannelMessages(string chanelId)
+        public async Task<Models.Message> GetChannelMessages(string chanelId, string messageId)
         {
             Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationResult res = await _authContext.AcquireTokenAsync("https://graph.microsoft.com", _credential);
             string accessToken = res.AccessToken;
             var req = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://graph.microsoft.com/beta/teams/{_teamsId}/channels/{chanelId}/messages/"),
+                RequestUri = new Uri($"https://graph.microsoft.com/beta/teams/{_teamsId}/channels/{chanelId}/messages/{messageId}"),
             };
             req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             var reqRes = await _httpClient.SendAsync(req);
-            return await reqRes.Content.ReadAsStringAsync();
+            string message = await reqRes.Content.ReadAsStringAsync();
+            Models.Message retContent = JsonSerializer.Deserialize<Models.Message>(message);
+            return retContent;
+        }
+
+        public async Task<ReplyMessage> GetReplyMessages(string chanelId, string messageId)
+        {
+            Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationResult res = await _authContext.AcquireTokenAsync("https://graph.microsoft.com", _credential);
+            string accessToken = res.AccessToken;
+            var req = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri($"https://graph.microsoft.com/beta/teams/{_teamsId}/channels/{chanelId}/messages/{messageId}/replies"),
+            };
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            var reqRes = await _httpClient.SendAsync(req);
+            string replymessage = await reqRes.Content.ReadAsStringAsync();
+            ReplyMessage retContent = JsonSerializer.Deserialize<ReplyMessage>(replymessage);
+            return retContent;
         }
 
         public async Task<PostMessageReturn> PostChannelMessages(string chanelId, PostChannelMessage message)
@@ -134,17 +152,16 @@ namespace FrontChatSystem.Api.Data
 
         public async Task ReplyChannelMessages(string chanelId, string messageId, PostChannelMessage message)
         {
-            Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationResult res = await _authContext.AcquireTokenAsync("https://graph.microsoft.com", _credential);
-            string accessToken = res.AccessToken;
+            string accessToken = await AquireTokenUserContext();
             var req = new HttpRequestMessage
             {
-                Method = HttpMethod.Get,
+                Method = HttpMethod.Post,
                 RequestUri = new Uri($"https://graph.microsoft.com/beta/teams/{_teamsId}/channels/{chanelId}/messages/{messageId}/replies"),
             };
             req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
             string json = JsonSerializer.ToJsonString<PostChannelMessage>(message);
-            StringContent content = new StringContent(json);
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
             req.Content = content;
 
             var reqRes = await _httpClient.SendAsync(req);
