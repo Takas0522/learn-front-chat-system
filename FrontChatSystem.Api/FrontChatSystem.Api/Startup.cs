@@ -35,6 +35,7 @@ namespace FrontChatSystem.Api
 
             services.AddSingleton<IGraphData, GraphData>();
             services.AddSingleton<IMessagesService, MessagesService>();
+            services.AddSingleton<IChannelService, ChannelService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

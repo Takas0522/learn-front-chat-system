@@ -1,20 +1,24 @@
 ﻿using FrontChatSystem.Api.Data;
+using Microsoft.Graph;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 namespace FrontChatSystem.Api.Domains
 {
-    public class MessagesService : IMessagesService
+    public class ChannelService : IChannelService
     {
         private readonly IGraphData _data;
-        public MessagesService(IGraphData data)
+        public ChannelService(IGraphData data)
         {
             _data = data;
         }
-
+        public async Task<Channel> GetChannels(string channelId)
+        {
+            Channel chanel = await _data.GetChannel(channelId);
+            return chanel;
+        }
         public async Task<string> GenerateChannels()
         {
             Guid guidValue = Guid.NewGuid();
@@ -24,9 +28,5 @@ namespace FrontChatSystem.Api.Domains
             return chanelId;
         }
 
-        public async Task<string> GetChanelMessages(string chanelId)
-        {
-            return await _data.GetChannelMessages(chanelId);
-        }
     }
 }
