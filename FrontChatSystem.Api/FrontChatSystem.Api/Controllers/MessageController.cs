@@ -23,23 +23,23 @@ namespace FrontChatSystem.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<MessageWithReply> GetMessages(string channelId, string messageId)
+        public async Task<MessageWithReply> GetMessages(string messageId)
         {
-            MessageWithReply messageIId = await _service.GetChanelMessages(channelId, messageId);
+            MessageWithReply messageIId = await _service.GetChanelMessages(messageId);
             return messageIId;
         }
 
         [HttpPost]
-        public async Task<string> GenerateMessage([FromForm]string channelId, [FromForm]string message)
+        public async Task<string> GenerateMessage([FromForm]string message)
         {
-            string messageIId = await _service.PostMessages(channelId, message);
+            string messageIId = await _service.PostMessages(message);
             return messageIId;
         }
 
         [HttpPut]
-        public async Task<ActionResult<string>> ReplyMessage([FromForm]string channelId, [FromForm]string messageId, [FromForm]string message)
+        public async Task<ActionResult<string>> ReplyMessage([FromForm]string messageId, [FromForm]string message)
         {
-            await _service.ReplyMessages(channelId, messageId, message);
+            await _service.ReplyMessages(messageId, message);
             return null;
         }
     }

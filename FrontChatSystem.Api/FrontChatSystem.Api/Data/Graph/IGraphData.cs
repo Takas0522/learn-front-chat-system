@@ -6,12 +6,12 @@ namespace FrontChatSystem.Api.Data
 {
     public interface IGraphData
     {
-        Task<string> GenerateChannel(string channelId);
-        Task<Channel> GetChannel(string channelId);
-        Task<Models.Message> GetChannelMessages(string chanelId, string messageId);
-        Task<ReplyMessage> GetReplyMessages(string chanelId, string messageId);
+        Task<string> GenerateChannel();
+        Task<Channel> GetChannel();
+        Task<Models.Message> GetChannelMessages(string messageId);
+        Task<ReplyMessage> GetReplyMessages(string messageId);
         Task<string> GetJoinedTeams();
-        Task<PostMessageReturn> PostChannelMessages(string chanelId, PostChannelMessage message);
-        Task ReplyChannelMessages(string chanelId, string messageId, PostChannelMessage message);
+        Task<PostMessageReturn> PostChannelMessages(PostChannelMessage message);
+        Task ReplyChannelMessages(string messageId, PostChannelMessage message);
     }
 }

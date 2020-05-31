@@ -22,9 +22,9 @@ namespace FrontChatSystem.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<Channel>> GetChannel(string channelId)
+        public async Task<ActionResult<Channel>> GetChannel()
         {
-            Channel channel = await _channelService.GetChannels(channelId);
+            Channel channel = await _channelService.GetChannels();
             if (channel != null)
             {
                 return NoContent();

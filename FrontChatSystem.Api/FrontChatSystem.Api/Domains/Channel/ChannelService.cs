@@ -14,17 +14,14 @@ namespace FrontChatSystem.Api.Domains
         {
             _data = data;
         }
-        public async Task<Channel> GetChannels(string channelId)
+        public async Task<Channel> GetChannels()
         {
-            Channel chanel = await _data.GetChannel(channelId);
+            Channel chanel = await _data.GetChannel();
             return chanel;
         }
         public async Task<string> GenerateChannels()
         {
-            Guid guidValue = Guid.NewGuid();
-            string guidSt = guidValue.ToString();
-            string chanelId = await _data.GenerateChannel(guidSt);
-
+            string chanelId = await _data.GenerateChannel();
             return chanelId;
         }
 

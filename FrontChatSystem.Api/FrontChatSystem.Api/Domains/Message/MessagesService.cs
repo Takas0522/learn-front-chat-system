@@ -17,10 +17,10 @@ namespace FrontChatSystem.Api.Domains
             _data = data;
         }
 
-        public async Task<MessageWithReply> GetChanelMessages(string chanelId, string messageId)
+        public async Task<MessageWithReply> GetChanelMessages(string messageId)
         {
-             Models.Message data = await _data.GetChannelMessages(chanelId, messageId);
-            ReplyMessage replyData = await _data.GetReplyMessages(chanelId, messageId);
+             Models.Message data = await _data.GetChannelMessages(messageId);
+            ReplyMessage replyData = await _data.GetReplyMessages(messageId);
             
             var hostData = new HostMessage { CreatedDateTime = data.CreatedDateTime, HostUserId = data.From.User.Id };
             IEnumerable<ReplyMessageData> reply = replyData.Value.Select(s => {
@@ -34,7 +34,7 @@ namespace FrontChatSystem.Api.Domains
             return new MessageWithReply { Message = hostData, ReplyMessage = reply };
         }
 
-        public async Task<string> PostMessages(string chanelId, string message)
+        public async Task<string> PostMessages(string message)
         {
             var messagebody = new ChannelMessageBody
             {
@@ -45,11 +45,11 @@ namespace FrontChatSystem.Api.Domains
                 Body = messagebody
             };
             postmessage.EncodeContentString();
-            PostMessageReturn retContent = await _data.PostChannelMessages(chanelId, postmessage);
+            PostMessageReturn retContent = await _data.PostChannelMessages(postmessage);
             return retContent.Id;
         }
 
-        public async Task ReplyMessages(string chanelId, string messageId, string reply)
+        public async Task ReplyMessages(string messageId, string reply)
         {
             var messagebody = new ChannelMessageBody
             {
@@ -60,7 +60,7 @@ namespace FrontChatSystem.Api.Domains
                 Body = messagebody
             };
             postmessage.EncodeContentString();
-            await _data.ReplyChannelMessages(chanelId, messageId, postmessage);
+            await _data.ReplyChannelMessages(messageId, postmessage);
         }
     }
 }

@@ -1,0 +1,17 @@
+<div class="outer">
+    <form [formGroup]="formGroup" (ngSubmit)="submit()">
+        <div>
+            <mat-form-field>
+                <input matInput formControlName="name" placeholder="名前"/>
+            </mat-form-field>
+        </div>
+        <div>
+            <mat-form-field>
+                <input matInput formControlName="question" placeholder="質問内容"/>
+            </mat-form-field>
+        </div>
+        <div>
+            <button mat-flat-button type="submit" color="primary">質問する</button>
+        </div>
+    </form>
+</div>

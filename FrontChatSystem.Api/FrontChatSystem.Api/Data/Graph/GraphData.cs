@@ -29,6 +29,7 @@ namespace FrontChatSystem.Api.Data
         private readonly string _tenantId;
         private readonly string _applicationId;
         private readonly string _secret;
+        private readonly string _channelId;
 
         public GraphData(IConfiguration config)
         {
@@ -39,6 +40,7 @@ namespace FrontChatSystem.Api.Data
             _secret = config["GraphSettings:secret"];
             _anonymousUserId = config["AnonymousUser:Id"];
             _anonymousUserPassword = config["AnonymousUser:Password"];
+            _channelId = config["GraphSettings:channelId"];
 
             IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
                 .Create(_applicationId)
@@ -52,7 +54,6 @@ namespace FrontChatSystem.Api.Data
             _credential = new Microsoft.IdentityModel.Clients.ActiveDirectory.ClientCredential(_applicationId, _secret);
 
             _authContext = new AuthenticationContext($"https://login.microsoftonline.com/{_tenantId}/");
-            
 
             _httpClient = new HttpClient();
         }
@@ -63,22 +64,22 @@ namespace FrontChatSystem.Api.Data
             return "a";
         }
 
-        public async Task<string> GenerateChannel(string channelId)
+        public async Task<string> GenerateChannel()
         {
             var channel = new Channel
             {
-                DisplayName = $"問い合わせ({channelId})",
+                DisplayName = $"問い合わせ",
                 Description = "テスト作成"
             };
             var res = await _client.Teams[_teamsId].Channels.Request().AddAsync(channel);
             return res.Id;
         }
 
-        public async Task<Channel> GetChannel(string channelId)
+        public async Task<Channel> GetChannel()
         {
             try
             {
-                var res = await _client.Teams[_teamsId].Channels[channelId].Request().GetAsync();
+                var res = await _client.Teams[_teamsId].Channels[_channelId].Request().GetAsync();
                 return res;
             }
             catch (ServiceException e)
@@ -91,14 +92,14 @@ namespace FrontChatSystem.Api.Data
             }
         }
 
-        public async Task<Models.Message> GetChannelMessages(string chanelId, string messageId)
+        public async Task<Models.Message> GetChannelMessages(string messageId)
         {
             Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationResult res = await _authContext.AcquireTokenAsync("https://graph.microsoft.com", _credential);
             string accessToken = res.AccessToken;
             var req = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://graph.microsoft.com/beta/teams/{_teamsId}/channels/{chanelId}/messages/{messageId}"),
+                RequestUri = new Uri($"https://graph.microsoft.com/beta/teams/{_teamsId}/channels/{_channelId}/messages/{messageId}"),
             };
             req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             var reqRes = await _httpClient.SendAsync(req);
@@ -107,14 +108,14 @@ namespace FrontChatSystem.Api.Data
             return retContent;
         }
 
-        public async Task<ReplyMessage> GetReplyMessages(string chanelId, string messageId)
+        public async Task<ReplyMessage> GetReplyMessages(string messageId)
         {
             Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationResult res = await _authContext.AcquireTokenAsync("https://graph.microsoft.com", _credential);
             string accessToken = res.AccessToken;
             var req = new HttpRequestMessage
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://graph.microsoft.com/beta/teams/{_teamsId}/channels/{chanelId}/messages/{messageId}/replies"),
+                RequestUri = new Uri($"https://graph.microsoft.com/beta/teams/{_teamsId}/channels/{_channelId}/messages/{messageId}/replies"),
             };
             req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             var reqRes = await _httpClient.SendAsync(req);
@@ -123,13 +124,13 @@ namespace FrontChatSystem.Api.Data
             return retContent;
         }
 
-        public async Task<PostMessageReturn> PostChannelMessages(string chanelId, PostChannelMessage message)
+        public async Task<PostMessageReturn> PostChannelMessages(PostChannelMessage message)
         {
             string accessToken = await AquireTokenUserContext();
             var req = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri($"https://graph.microsoft.com/beta/teams/{_teamsId}/channels/{chanelId}/messages/"),
+                RequestUri = new Uri($"https://graph.microsoft.com/beta/teams/{_teamsId}/channels/{_channelId}/messages/"),
             };
             req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 
@@ -150,13 +151,13 @@ namespace FrontChatSystem.Api.Data
             }
         }
 
-        public async Task ReplyChannelMessages(string chanelId, string messageId, PostChannelMessage message)
+        public async Task ReplyChannelMessages(string messageId, PostChannelMessage message)
         {
             string accessToken = await AquireTokenUserContext();
             var req = new HttpRequestMessage
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri($"https://graph.microsoft.com/beta/teams/{_teamsId}/channels/{chanelId}/messages/{messageId}/replies"),
+                RequestUri = new Uri($"https://graph.microsoft.com/beta/teams/{_teamsId}/channels/{_channelId}/messages/{messageId}/replies"),
             };
             req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
 

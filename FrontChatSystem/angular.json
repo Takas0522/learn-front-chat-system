@@ -3,32 +3,72 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "FrontChatSystem": {
+    "FrontChatLib": {
+      "projectType": "library",
+      "root": "projects/front-chat-lib",
+      "sourceRoot": "projects/front-chat-lib/src",
+      "prefix": "fcl",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/front-chat-lib/tsconfig.lib.json",
+            "project": "projects/front-chat-lib/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/front-chat-lib/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/front-chat-lib/src/test.ts",
+            "tsConfig": "projects/front-chat-lib/tsconfig.spec.json",
+            "karmaConfig": "projects/front-chat-lib/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/front-chat-lib/tsconfig.lib.json",
+              "projects/front-chat-lib/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "SandBox": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss"
         }
       },
-      "root": "",
-      "sourceRoot": "src",
+      "root": "projects/SandBox",
+      "sourceRoot": "projects/SandBox/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/FrontChatSystem",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.app.json",
+            "outputPath": "dist/SandBox",
+            "index": "projects/SandBox/src/index.html",
+            "main": "projects/SandBox/src/main.ts",
+            "polyfills": "projects/SandBox/src/polyfills.ts",
+            "tsConfig": "projects/SandBox/tsconfig.app.json",
             "aot": true,
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              "projects/SandBox/src/favicon.ico",
+              "projects/SandBox/src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "projects/SandBox/src/styles.scss"
             ],
             "scripts": []
           },
@@ -36,8 +76,8 @@
             "production": {
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "replace": "projects/SandBox/src/environments/environment.ts",
+                  "with": "projects/SandBox/src/environments/environment.prod.ts"
                 }
               ],
               "optimization": true,
@@ -66,33 +106,34 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "FrontChatSystem:build"
+            "browserTarget": "SandBox:build",
+            "proxyConfig": "proxy.conf.json"
           },
           "configurations": {
             "production": {
-              "browserTarget": "FrontChatSystem:build:production"
+              "browserTarget": "SandBox:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "FrontChatSystem:build"
+            "browserTarget": "SandBox:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
-            "tsConfig": "tsconfig.spec.json",
-            "karmaConfig": "karma.conf.js",
+            "main": "projects/SandBox/src/test.ts",
+            "polyfills": "projects/SandBox/src/polyfills.ts",
+            "tsConfig": "projects/SandBox/tsconfig.spec.json",
+            "karmaConfig": "projects/SandBox/karma.conf.js",
             "assets": [
-              "src/favicon.ico",
-              "src/assets"
+              "projects/SandBox/src/favicon.ico",
+              "projects/SandBox/src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "projects/SandBox/src/styles.scss"
             ],
             "scripts": []
           }
@@ -101,9 +142,9 @@
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
+              "projects/SandBox/tsconfig.app.json",
+              "projects/SandBox/tsconfig.spec.json",
+              "projects/SandBox/e2e/tsconfig.json"
             ],
             "exclude": [
               "**/node_modules/**"
@@ -113,20 +154,19 @@
         "e2e": {
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "FrontChatSystem:serve"
+            "protractorConfig": "projects/SandBox/e2e/protractor.conf.js",
+            "devServerTarget": "SandBox:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "FrontChatSystem:serve:production"
+              "devServerTarget": "SandBox:serve:production"
             }
           }
         }
       }
-    }
-  },
-  "defaultProject": "FrontChatSystem",
+    }},
   "cli": {
     "analytics": false
-  }
+  },
+  "defaultProject": "FrontChatLib"
 }
