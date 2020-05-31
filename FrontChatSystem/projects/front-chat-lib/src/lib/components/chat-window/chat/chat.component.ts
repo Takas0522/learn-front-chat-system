@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap } from '@angular/router';
-import { switchMap } from 'rxjs/operators';
+import { switchMap, mergeMap } from 'rxjs/operators';
 import { FrontChatService } from '../../../service/front-chat.service';
-import { Observable, of } from 'rxjs';
-import { IMessageWithReply, MessageWithReply } from './models/message-with-reply';
+import { Observable, of, interval } from 'rxjs';
+import { IMessageWithReply, MessageWithReply, IReplyMessageData } from './models/message-with-reply';
 
 @Component({
   selector: 'fcl-chat',
@@ -12,8 +12,10 @@ import { IMessageWithReply, MessageWithReply } from './models/message-with-reply
 })
 export class ChatComponent implements OnInit {
 
-  private message$!: Observable<IMessageWithReply | null>;
   message: MessageWithReply | null = null;
+  hostId = '';
+  inputValue = '';
+  private messageId = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -21,22 +23,49 @@ export class ChatComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.message$ = this.route.paramMap.pipe(
+    const message$ = this.route.paramMap.pipe(
       switchMap((params: ParamMap) => {
         const id = params.get('id') ? params.get('id') : '';
         if (id) {
+          this.messageId = id;
           return this.service.getMessage(id);
         }
         return of(null);
       })
     );
-    this.message$.subscribe(x => {
+    message$.subscribe(x => {
       if (x) {
-        this.message = new MessageWithReply(x);
-      } else {
-        this.message = null;
+        this.getMessage$(this.messageId);
       }
-      console.log(this.message)
+    });
+
+  }
+
+  private getMessage$(id: string) {
+    interval(5000).pipe(
+      mergeMap(() => {
+        return this.service.getMessage(id);
+      })
+    ).subscribe(x => {
+      this.setMessage(x);
+    });
+  }
+
+  private setMessage(message: IMessageWithReply | null) {
+    if (message) {
+      this.message = new MessageWithReply(message);
+      this.hostId = this.message.message.hostUserId;
+    } else {
+      this.message = null;
+    }
+    console.log(message);
+  }
+
+  replyMessage() {
+    this.service.replyMessage(this.messageId, this.inputValue).subscribe(() => {
+      this.service.getMessage(this.messageId).subscribe(x => {
+        this.setMessage(x);
+      });
     });
   }
 

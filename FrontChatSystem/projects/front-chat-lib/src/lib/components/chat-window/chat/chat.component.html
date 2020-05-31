@@ -1,1 +1,31 @@
-<p>chat works!</p>
+<div class="contents">
+    <ng-container *ngIf="message">
+        <div class="inner">
+            セッション開始：{{message.message.createdDateTime | date: 'yyyy/MM/dd hh:mm:ss'}}
+        </div>
+        <div class="inner">
+            <mat-list>
+                <ng-container *ngFor="let reply of message.replyMessage">
+                    <mat-list-item>
+                        <mat-icon *ngIf="hostId === reply.userId" mat-list-icon class="mat-list-icon" mat-list-icon>person</mat-icon>
+                        <mat-icon *ngIf="hostId !== reply.userId" mat-list-icon class="mat-list-icon" mat-list-icon>public</mat-icon>
+                        <div mat-line>{{reply.content}}</div>
+                        <div mat-line><small>{{reply.createdDateTime | date: 'yyyy/MM/dd hh:mm:ss'}}</small></div>
+                    </mat-list-item>
+                    <mat-divider></mat-divider>
+                </ng-container>
+            </mat-list>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="!message">
+        セッション確立中…
+    </ng-container>
+</div>
+<div class="footer">
+    <mat-form-field class="example-form-field">
+        <input matInput type="text" [(ngModel)]="inputValue">
+        <button mat-button matSuffix mat-icon-button aria-label="Edit" (click)="replyMessage()">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-form-field>
+</div>
