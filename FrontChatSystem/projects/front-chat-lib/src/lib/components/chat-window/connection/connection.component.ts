@@ -31,7 +31,7 @@ export class ConnectionComponent implements OnInit {
       return;
     }
     const val = this.formGroup.value;
-    const message = `${val.name}さんから問い合わせ<br>質問内容：${val.question}`;
+    const message = `${val.name}さんから問い合わせ/n質問内容：${val.question}`;
     this.chatService.createMessage(message).subscribe(x => {
       console.log(`messageId:${x}`);
       this.chatService.saveMessageId(x);

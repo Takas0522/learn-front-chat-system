@@ -17,14 +17,22 @@ namespace FrontChatSystem.Api.Domains
             _data = data;
         }
 
+        public async Task<SubscriptionResponse> SetSubscription()
+        {
+            SubscriptionResponse data = await _data.SetSubscription();
+            return data;
+        }
+
         public async Task<MessageWithReply> GetChanelMessages(string messageId)
         {
-             Models.Message data = await _data.GetChannelMessages(messageId);
+            Models.Message data = await _data.GetChannelMessages(messageId);
             ReplyMessage replyData = await _data.GetReplyMessages(messageId);
-            
+
             var hostData = new HostMessage { CreatedDateTime = data.CreatedDateTime, HostUserId = data.From.User.Id };
-            IEnumerable<ReplyMessageData> reply = replyData.Value.Select(s => {
-                return new ReplyMessageData {
+            IEnumerable<ReplyMessageData> reply = replyData.Value.Select(s =>
+            {
+                return new ReplyMessageData
+                {
                     CreatedDateTime = s.CreatedDateTime,
                     Content = s.Body.Content,
                     UserId = s.From.User.Id
@@ -44,7 +52,6 @@ namespace FrontChatSystem.Api.Domains
             {
                 Body = messagebody
             };
-            postmessage.EncodeContentString();
             PostMessageReturn retContent = await _data.PostChannelMessages(postmessage);
             return retContent.Id;
         }

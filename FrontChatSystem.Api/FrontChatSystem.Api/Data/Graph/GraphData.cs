@@ -30,6 +30,7 @@ namespace FrontChatSystem.Api.Data
         private readonly string _applicationId;
         private readonly string _secret;
         private readonly string _channelId;
+        private readonly string _subscriptionUrl;
 
         public GraphData(IConfiguration config)
         {
@@ -41,6 +42,7 @@ namespace FrontChatSystem.Api.Data
             _anonymousUserId = config["AnonymousUser:Id"];
             _anonymousUserPassword = config["AnonymousUser:Password"];
             _channelId = config["GraphSettings:channelId"];
+            _subscriptionUrl = config["GraphSettings:subscriptionUrl"];
 
             IConfidentialClientApplication confidentialClientApplication = ConfidentialClientApplicationBuilder
                 .Create(_applicationId)
@@ -106,6 +108,40 @@ namespace FrontChatSystem.Api.Data
             string message = await reqRes.Content.ReadAsStringAsync();
             Models.Message retContent = JsonSerializer.Deserialize<Models.Message>(message);
             return retContent;
+        }
+
+        public async Task<SubscriptionResponse> SetSubscription()
+        {
+            Microsoft.IdentityModel.Clients.ActiveDirectory.AuthenticationResult res = await _authContext.AcquireTokenAsync("https://graph.microsoft.com", _credential);
+            string accessToken = res.AccessToken;
+            var req = new HttpRequestMessage
+            {
+                Method = HttpMethod.Post,
+                RequestUri = new Uri($"https://graph.microsoft.com/beta/subscriptions"),
+            };
+            req.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            var subscriptionSettting = new SubscriptionPost
+            {
+                ChangeType = "created,updated",
+                NotificationUrl = _subscriptionUrl,
+                ExpirationDateTime = DateTime.Now.AddMinutes(30),
+                Resource = $"/teams/{_teamsId}/channels/{_channelId}/messages"
+            };
+            string json = JsonSerializer.ToJsonString<SubscriptionPost>(subscriptionSettting);
+            StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+            req.Content = content;
+
+            var reqRes = await _httpClient.SendAsync(req);
+            if (reqRes.IsSuccessStatusCode)
+            {
+                string contentString = await reqRes.Content.ReadAsStringAsync();
+                SubscriptionResponse retContent = JsonSerializer.Deserialize<SubscriptionResponse>(contentString);
+                return retContent;
+            }
+            else
+            {
+                throw new Exception("Failed Post Message");
+            }
         }
 
         public async Task<ReplyMessage> GetReplyMessages(string messageId)

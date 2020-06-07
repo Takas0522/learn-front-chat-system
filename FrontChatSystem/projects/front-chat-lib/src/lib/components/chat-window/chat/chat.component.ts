@@ -67,6 +67,7 @@ export class ChatComponent implements OnInit {
         this.setMessage(x);
       });
     });
+    this.inputValue = '';
   }
 
 }

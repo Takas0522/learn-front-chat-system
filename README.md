@@ -1,0 +1,12 @@
+https://stackoverflow.com/questions/56953608/api-call-error-403-microsoft-teams-messages
+https://docs.microsoft.com/en-us/graph/teams-protected-apis
+https://docs.microsoft.com/ja-jp/graph/api/subscription-post-subscriptions?view=graph-rest-beta&tabs=http
+https://docs.microsoft.com/ja-jp/graph/webhooks-with-resource-data
+https://docs.microsoft.com/ja-jp/graph/changelog
+https://docs.microsoft.com/ja-jp/graph/api/channel-post-messages?view=graph-rest-1.0&tabs=http
+https://docs.microsoft.com/ja-jp/graph/api/channel-get?view=graph-rest-1.0&tabs=csharp
+https://docs.microsoft.com/ja-jp/graph/api/channel-post-messages?view=graph-rest-1.0&tabs=http
+https://docs.microsoft.com/ja-jp/graph/api/channel-post-messagereply?view=graph-rest-beta&tabs=http
+https://docs.microsoft.com/ja-jp/graph/api/channel-list-messagereplies?view=graph-rest-beta&tabs=http
+https://docs.microsoft.com/ja-jp/graph/api/channel-get-message?view=graph-rest-beta&tabs=http
+https://docs.microsoft.com/ja-jp/power-bi/developer/embedded/get-azuread-access-token

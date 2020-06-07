@@ -9,9 +9,10 @@ namespace FrontChatSystem.Api.Data
         Task<string> GenerateChannel();
         Task<Channel> GetChannel();
         Task<Models.Message> GetChannelMessages(string messageId);
-        Task<ReplyMessage> GetReplyMessages(string messageId);
         Task<string> GetJoinedTeams();
+        Task<ReplyMessage> GetReplyMessages(string messageId);
         Task<PostMessageReturn> PostChannelMessages(PostChannelMessage message);
         Task ReplyChannelMessages(string messageId, PostChannelMessage message);
+        Task<SubscriptionResponse> SetSubscription();
     }
 }

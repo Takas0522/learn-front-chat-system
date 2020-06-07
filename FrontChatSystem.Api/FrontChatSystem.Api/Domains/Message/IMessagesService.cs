@@ -8,5 +8,6 @@ namespace FrontChatSystem.Api.Domains
         Task<MessageWithReply> GetChanelMessages(string messageId);
         Task<string> PostMessages(string message);
         Task ReplyMessages(string messageId, string reply);
+        Task<SubscriptionResponse> SetSubscription();
     }
 }
