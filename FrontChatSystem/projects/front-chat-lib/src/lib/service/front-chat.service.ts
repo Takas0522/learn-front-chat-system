@@ -2,6 +2,13 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { IMessageWithReply } from '../components/chat-window/chat/models/message-with-reply';
+import { HubConnection } from '@aspnet/signalr';
+import * as signalR from '@aspnet/signalr';
+
+interface ISignalRConnectionInfo {
+  url: string;
+  accessToken: string;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +21,7 @@ export class FrontChatService {
   get messageId() {
     return this.messageIdp;
   }
+  private hubConnection: HubConnection | undefined;
 
   constructor(
     private http: HttpClient
@@ -49,6 +57,34 @@ export class FrontChatService {
       return load;
     }
     return '';
+  }
+
+  subscriptionNegtiation() {
+    this.getConnectionInfo().subscribe(info => {
+      const options = {
+          accessTokenFactory: () => info.accessToken
+      };
+
+      this.hubConnection = new signalR.HubConnectionBuilder()
+          .withUrl(info.url, options)
+          .configureLogging(signalR.LogLevel.Information)
+          .build();
+
+      this.hubConnection.start().catch(err => console.error(err.toString()));
+
+      this.hubConnection.on('notify', (data: any) => {
+          console.log(data);
+      });
+    });
+  }
+
+  private getConnectionInfo() {
+    const requestUrl = `https://okawa-sample-subscription.azurewebsites.net/api/Negotiate?code=KALBdHhpxaRlSLSOVazFAlAFS56WuiVLUw1iqP1y/1/Vc8/hMdwWUA==`;
+    return this.http.get<ISignalRConnectionInfo>(requestUrl);
+  }
+
+  startSubscription() {
+    return this.http.request('POST', `${this.endpointUrl}/Subscription`).subscribe(() => console.log('Set Subscription'));
   }
 
   exitSession() {

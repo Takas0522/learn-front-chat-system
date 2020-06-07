@@ -23,6 +23,7 @@ export class ChatComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.service.subscriptionNegtiation();
     const message$ = this.route.paramMap.pipe(
       switchMap((params: ParamMap) => {
         const id = params.get('id') ? params.get('id') : '';
@@ -33,12 +34,12 @@ export class ChatComponent implements OnInit {
         return of(null);
       })
     );
+    this.service.startSubscription();
     message$.subscribe(x => {
       if (x) {
         this.getMessage$(this.messageId);
       }
     });
-
   }
 
   private getMessage$(id: string) {
