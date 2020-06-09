@@ -1,0 +1,41 @@
+<div class="contents">
+    <ng-container *ngIf="messages !== null">
+        <div class="inner contents-header">
+            セッション開始：{{messages?.message?.createdDateTime | date: 'yyyy/MM/dd hh:mm:ss'}}
+        </div>
+        <div class="inner chat">
+            <mat-list>
+                <ng-container *ngFor="let reply of messages?.replyMessage">
+                    <mat-list-item>
+                        <mat-icon *ngIf="messages?.message?.hostUserId === reply.userId" mat-list-icon class="mat-list-icon" mat-list-icon>person</mat-icon>
+                        <mat-icon *ngIf="messages?.message?.hostUserId !== reply.userId" mat-list-icon class="mat-list-icon" mat-list-icon>public</mat-icon>
+                        <div mat-line>
+                            <ng-container *ngIf="messages?.message?.hostUserId !== reply.userId">
+                                <b>Teamsの中の人</b>
+                            </ng-container>
+                            <ng-container *ngIf="messages?.message?.hostUserId === reply.userId">
+                                <b>あなた</b>
+                            </ng-container>
+                            <small class="date-field">
+                                {{reply.createdDateTime | date: 'yyyy/MM/dd hh:mm:ss'}}
+                            </small>
+                        </div>
+                        <div mat-line>{{reply.content}}</div>
+                    </mat-list-item>
+                    <mat-divider></mat-divider>
+                </ng-container>
+            </mat-list>
+        </div>
+    </ng-container>
+    <ng-container *ngIf="messages == null">
+        セッション確立中…
+    </ng-container>
+</div>
+<div class="footer">
+    <mat-form-field class="example-form-field">
+        <input matInput type="text" [(ngModel)]="inputValue">
+        <button mat-button matSuffix mat-icon-button aria-label="Edit" (click)="replyMessage()">
+          <mat-icon>edit</mat-icon>
+        </button>
+      </mat-form-field>
+</div>
