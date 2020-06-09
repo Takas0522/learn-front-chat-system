@@ -1,0 +1,37 @@
+$contents-width: calc(100% - 20px);
+.contents {
+    height: calc(100vh - 100px);
+    overflow-y: hidden;
+    overflow-x: hidden;
+    width: $contents-width;
+    margin: 10px;
+    margin-bottom: 0px;
+}
+.contents-header {
+    height: 20px;
+}
+.chat {
+    height: calc(100% - 10px);
+    overflow-y: auto;
+}
+.footer{
+    width: $contents-width;
+    position: absolute;
+    bottom: 10px;
+    mat-form-field {
+        width: 100%;
+    }
+    margin-left: 10px;
+}
+.mat-list-icon {
+    color: rgba(0, 0, 0, 0.54);
+}
+.inner {
+    width: 100%;
+    mat-list {
+        width: 100%;
+    }
+}
+.date-field {
+    margin-left: 5px;
+}
