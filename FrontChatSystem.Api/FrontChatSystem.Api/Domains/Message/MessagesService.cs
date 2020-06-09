@@ -37,7 +37,7 @@ namespace FrontChatSystem.Api.Domains
                     Content = s.Body.Content,
                     UserId = s.From.User.Id
                 };
-            });
+            }).OrderBy(o => o.CreatedDateTime);
 
             return new MessageWithReply { Message = hostData, ReplyMessage = reply };
         }
