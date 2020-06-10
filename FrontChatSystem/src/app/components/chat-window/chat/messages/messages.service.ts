@@ -18,12 +18,15 @@ export class MessagesService {
   ) {}
 
   setSignalRHub() {
+    this.webApi.startSubscription();
     this.webApi.getConnectionInfo().subscribe(info => {
       this.hubConncetionSettings(info);
     });
   }
 
   private hubConncetionSettings(info: SignalRConnectionInfo) {
+    console.log('SETTING CONNECTION');
+    console.log(info);
     const options = {
       accessTokenFactory: () => info.accessToken
     };
