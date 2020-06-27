@@ -20,7 +20,7 @@
                                 {{reply.createdDateTime | date: 'yyyy/MM/dd hh:mm:ss'}}
                             </small>
                         </div>
-                        <div mat-line>{{reply.content}}</div>
+                        <div mat-line [innerHTML]="reply.content"></div>
                     </mat-list-item>
                     <mat-divider></mat-divider>
                 </ng-container>

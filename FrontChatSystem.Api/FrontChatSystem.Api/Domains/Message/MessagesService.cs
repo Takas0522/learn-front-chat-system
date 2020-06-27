@@ -46,7 +46,8 @@ namespace FrontChatSystem.Api.Domains
         {
             var messagebody = new ChannelMessageBody
             {
-                Content = message
+                Content = message,
+                ContentType = BodyType.Html
             };
             var postmessage = new PostChannelMessage
             {
@@ -60,13 +61,13 @@ namespace FrontChatSystem.Api.Domains
         {
             var messagebody = new ChannelMessageBody
             {
-                Content = reply
+                Content = reply,
+                ContentType = BodyType.Html
             };
             var postmessage = new PostChannelMessage
             {
                 Body = messagebody
             };
-            postmessage.EncodeContentString();
             await _data.ReplyChannelMessages(messageId, postmessage);
         }
     }

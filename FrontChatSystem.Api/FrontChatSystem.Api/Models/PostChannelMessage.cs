@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Graph;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -22,5 +23,7 @@ namespace FrontChatSystem.Api.Models
     {
         [DataMember(Name = "content")]
         public string Content { get; set; }
+        [DataMember(Name ="contentType")]
+        public BodyType ContentType { get; set; }
     }
 }

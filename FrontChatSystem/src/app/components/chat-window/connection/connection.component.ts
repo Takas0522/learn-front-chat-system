@@ -32,7 +32,7 @@ export class ConnectionComponent implements OnInit {
       return;
     }
     const val = this.formGroup.value;
-    const message = `${val.name}さんから問い合わせ/n質問内容：${val.question}`;
+    const message = `<h1>質問：${val.question}</h1><br>${val.name}さんより`;
     this.webApiService.createMessage(message).subscribe(x => {
       console.log(`messageId:${x}`);
       this.chatWindowService.saveMessageId(x);
